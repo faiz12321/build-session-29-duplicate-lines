@@ -1,40 +1,19 @@
-# Find repeated lines
+# Report repeated fictional text lines
 
-Read-only teaching tool for one UTF-8 text file. It counts exact strings, so
-case and spaces matter. Blank lines have no characters and are labeled in the
-report. Ties keep first-appearance order. Lines use Python str.splitlines
-boundaries, not visual wrapping in an editor.
-
-The report prints line contents: practise only on fictional or non-sensitive
-data. It does not decide which copies to keep. An explicit file path can follow
-a link to a target elsewhere. Link handling is unchanged and not tested here.
-
-## Practise
-
-Save all three files in a new empty lesson folder. Python 3 is required:
+Save three source files in a NEW empty lesson folder.
 
     python make_sample.py
     python dupelines.py sample/shopping.txt
     python -m unittest -v
 
-Setup creates sample beside the script and refuses any existing sample path.
-It never deletes or resets an old sample. Use a different new empty lesson
-folder if it refuses. The shopping list is fictional practice text.
+Two Windows and two Ubuntu full replays run exact visible source versions. Final 35 small fixture tests pass (Unix pipe skips on Windows); symlink creation can skip where unavailable. Displayed stdout is first Windows output, not normalized or mixed. Pair differences are unittest time.
+Only link/error changes: refuse input/ancestor symbolic links/reparse points, hardlinks, special files and traversal before reading. Read/metadata errors remain exit 2 with the original brief error wording. Setup refuses linked parents/traversal and existing sample paths, without reset or deletion. Naive first version remains fictional-sample-only and must be replaced.
+Original UTF-8 decoding, splitlines, exact case/space duplicate matching, blank-line label, occurrence sorting and first-appearance ties remain unchanged. Exit 0 remains a successful report whether repeated lines exist or not; invalid UTF-8 stays exit 1, usage/read errors 2. No deduplication, rewriting, whitespace normalization or data-safety claim.
+The checker has no write/move/delete/network code but reads the whole file and stores line counts in memory. No size/time/resource limit, atomic snapshot or hostile-race defense. Stop editors/sync. Repeated-line output exposes file contents and can contain secrets; keep private output private. Small fictional fixtures are not proof on every filesystem. No desktop Windows/macOS recording. Recorder removes only its own temporary fixture folder. Decisions and feedback are teaching text, not recorded output.
 
-## Evidence
+MIT code. Python separately licensed/not included.
 
-22 tests use temporary fixtures, including sample-count tests. They cover exact
-string counting, CLI errors, unchanged source metadata, setup file/folder
-collision refusal, original bytes, nested sentinel data and repeat-run
-preservation. These small fixture passes are not universal safety proof.
+Reference: https://docs.python.org/3/library/os.html
 
-Two GitHub-hosted Windows recordings and two Ubuntu recordings pass all tests.
-The driver first saves the repeated-comparison version and records its repeated
-reports, then saves the dictionary counter, as the lesson shows. Displayed
-output uses first Windows output. Paired runs differ only in unittest elapsed
-time; versions and test rendering can differ. No Windows desktop or macOS
-session was tested.
-
-## License
-
-MIT (see LICENSE).
+Windows pair: https://github.com/faiz12321/lesson-lab/actions/runs/38976673971
+Ubuntu pair: https://github.com/faiz12321/lesson-lab/actions/runs/38976747036
