@@ -1,0 +1,78 @@
+### CMD: python --version
+Python 3.12.3
+### EXIT: 0
+
+### CMD: python make_sample.py
+Created a new sample folder beside make_sample.py.
+It holds one made-up list, shopping.txt, with 14 lines.
+### EXIT: 0
+
+### CMD: python make_sample.py
+Stopped: sample already exists. Nothing was replaced or deleted.
+### EXIT: 1
+
+### CMD: python dupelines.py sample/shopping.txt
+Milk
+Bread
+Milk
+Bread
+Milk
+
+
+### EXIT: 0
+
+### CMD: python dupelines.py sample/shopping.txt
+Repeated lines
+File: sample/shopping.txt
+
+times  line
+-----  ----
+    3  Milk
+    2  Bread
+    2  (blank line)
+
+14 lines read, 10 distinct; 3 kinds of line are repeated.
+### EXIT: 0
+
+### CMD: python -m unittest -v
+test_basic_counts (test_dupelines.CountTests.test_basic_counts) ... ok
+test_case_sensitive (test_dupelines.CountTests.test_case_sensitive) ... ok
+test_first_appearance_order (test_dupelines.CountTests.test_first_appearance_order) ... ok
+test_spaces_count (test_dupelines.CountTests.test_spaces_count) ... ok
+test_blank_lines_reported (test_dupelines.MainTests.test_blank_lines_reported) ... ok
+test_crlf_and_last_line_without_ending (test_dupelines.MainTests.test_crlf_and_last_line_without_ending) ... ok
+test_empty_file (test_dupelines.MainTests.test_empty_file) ... ok
+test_missing_file (test_dupelines.MainTests.test_missing_file) ... ok
+test_no_repeats_message (test_dupelines.MainTests.test_no_repeats_message) ... ok
+test_not_utf8 (test_dupelines.MainTests.test_not_utf8) ... ok
+test_report_shape (test_dupelines.MainTests.test_report_shape) ... ok
+test_run_leaves_file_unchanged (test_dupelines.MainTests.test_run_leaves_file_unchanged) ... ok
+test_usage_error (test_dupelines.MainTests.test_usage_error) ... ok
+test_ancestor_alias_refuses (test_dupelines.PathSafety.test_ancestor_alias_refuses) ... ok
+test_file_alias_refuses (test_dupelines.PathSafety.test_file_alias_refuses) ... ok
+test_file_ancestor_refuses (test_dupelines.PathSafety.test_file_ancestor_refuses) ... ok
+test_file_dangling_refuses (test_dupelines.PathSafety.test_file_dangling_refuses) ... ok
+test_file_hardlink_refuses (test_dupelines.PathSafety.test_file_hardlink_refuses) ... ok
+test_file_pipe_refuses (test_dupelines.PathSafety.test_file_pipe_refuses) ... ok
+test_file_self_loop_refuses (test_dupelines.PathSafety.test_file_self_loop_refuses) ... ok
+test_file_traversal_refuses (test_dupelines.PathSafety.test_file_traversal_refuses) ... ok
+test_metadata_error_refuses (test_dupelines.PathSafety.test_metadata_error_refuses) ... ok
+test_reparse_attribute_refuses (test_dupelines.PathSafety.test_reparse_attribute_refuses) ... ok
+test_root_alias_refuses (test_dupelines.PathSafety.test_root_alias_refuses) ... ok
+test_setup_alias_parent_refuses (test_dupelines.PathSafety.test_setup_alias_parent_refuses) ... ok
+test_setup_traversal_refuses (test_dupelines.PathSafety.test_setup_traversal_refuses) ... ok
+test_blank_line_label (test_dupelines.RowTests.test_blank_line_label) ... ok
+test_most_copies_first_ties_in_order (test_dupelines.RowTests.test_most_copies_first_ties_in_order) ... ok
+test_no_repeats (test_dupelines.RowTests.test_no_repeats) ... ok
+test_only_repeated_lines (test_dupelines.RowTests.test_only_repeated_lines) ... ok
+test_rerun_preserves_generated_folder_and_user_file (test_dupelines.SampleTests.test_rerun_preserves_generated_folder_and_user_file) ... ok
+test_sample_counts (test_dupelines.SampleTests.test_sample_counts) ... ok
+test_setup_refuses_existing_file (test_dupelines.SampleTests.test_setup_refuses_existing_file) ... ok
+test_setup_refuses_existing_folder_without_change (test_dupelines.SampleTests.test_setup_refuses_existing_folder_without_change) ... ok
+test_source_is_read_only (test_dupelines.SampleTests.test_source_is_read_only) ... ok
+
+----------------------------------------------------------------------
+Ran 35 tests in 0.144s
+
+OK
+### EXIT: 0
