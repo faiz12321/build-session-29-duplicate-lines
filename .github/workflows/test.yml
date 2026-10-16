@@ -1,0 +1,22 @@
+name: tests
+on: [push]
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Make the sample folder
+        run: python make_sample.py
+      - name: Run the tests
+        run: python -m unittest -v
+      - name: Check the sample report
+        shell: bash
+        run: |
+          python dupelines.py sample/shopping.txt
+          python dupelines.py sample/shopping.txt | grep -q "14 lines read, 10 distinct; 3 kinds of line are repeated." && echo "Sample repeat report checked."
