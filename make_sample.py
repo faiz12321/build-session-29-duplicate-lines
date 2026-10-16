@@ -1,11 +1,10 @@
 """make_sample.py - create a made-up practice file for the lesson.
 
 Creates a folder called "sample" next to this script holding one
-made-up shopping list with a few repeated lines. Run it again any
-time; it first removes the old sample folder.
+made-up shopping list with a few repeated lines. It refuses any existing sample
+path before writing. Nothing is deleted or replaced.
 """
 import os
-import shutil
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SAMPLE = os.path.join(HERE, "sample")
@@ -28,13 +27,14 @@ Tea
 
 
 def main():
-    if os.path.isdir(SAMPLE):
-        shutil.rmtree(SAMPLE)
-    os.makedirs(SAMPLE)
+    try:
+        os.mkdir(SAMPLE)
+    except FileExistsError:
+        raise SystemExit("Stopped: sample already exists. Nothing was replaced or deleted.")
     path = os.path.join(SAMPLE, "shopping.txt")
-    with open(path, "w", newline="") as handle:
+    with open(path, "x", encoding="utf-8", newline="") as handle:
         handle.write(LIST)
-    print("Sample folder ready: " + SAMPLE)
+    print("Created a new sample folder beside make_sample.py.")
     print("It holds one made-up list, shopping.txt, with 14 lines.")
 
 
