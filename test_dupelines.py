@@ -1,3 +1,4 @@
+from unittest import mock
 """Tests for dupelines.py. They run in a temporary folder, so real
 files are never touched."""
 import contextlib
@@ -184,11 +185,62 @@ class SampleTests(unittest.TestCase):
     def test_source_is_read_only(self):
         with open(os.path.join(HERE, "dupelines.py"), "r") as handle:
             source = handle.read()
-        self.assertIn('open(path, "rb")', source)
+        self.assertIn('open(safe_input(path), "rb")', source)
         for word in ("os.remove", "os.unlink", "os.rename", "os.replace",
                      "os.mkdir", "os.rmdir", "shutil", ".write(", "writelines",
                      '"w")', "'w')", '"a")', "'a')"):
             self.assertNotIn(word, source)
+
+
+class PathSafety(unittest.TestCase):
+    def setUp(self):
+        self.tmp=tempfile.TemporaryDirectory();self.addCleanup(self.tmp.cleanup)
+        self.base=Path(self.tmp.name);self.root=self.base/'tree';self.root.mkdir()
+        self.file=self.root/'zero';self.file.write_bytes(b'')
+    def link(self,path,target,directory=False):
+        try:path.symlink_to(target,target_is_directory=directory)
+        except OSError:self.skipTest('Symlinks unavailable')
+    def code(self,path):
+        with contextlib.redirect_stdout(io.StringIO()),contextlib.redirect_stderr(io.StringIO()):
+            return dupelines.main(['p',str(path)])
+    def test_root_alias_refuses(self):
+        p=self.base/'alias';self.link(p,self.root,True);self.assertEqual(self.code(p),2)
+    def test_ancestor_alias_refuses(self):
+        p=self.base/'alias';self.link(p,self.base,True);self.assertEqual(self.code(p/'tree'),2)
+    def test_file_alias_refuses(self):
+        p=self.base/'linked';self.link(p,self.file);self.assertEqual(self.code(p),2)
+    def test_file_hardlink_refuses(self):
+        p=self.base/'hard';os.link(self.file,p);self.assertEqual(self.code(p),2)
+    def test_file_pipe_refuses(self):
+        if not hasattr(os,'mkfifo'):self.skipTest('Unix pipe unavailable')
+        p=self.base/'pipe';os.mkfifo(p);self.assertEqual(self.code(p),2)
+    def test_file_self_loop_refuses(self):
+        p=self.base/'loop';self.link(p,p);self.assertEqual(self.code(p),2)
+    def test_file_dangling_refuses(self):
+        p=self.base/'alias';self.link(p,self.base/'missing');self.assertEqual(self.code(p),2)
+    def test_file_traversal_refuses(self):self.assertEqual(self.code(self.root/'..'/'tree'/'zero'),2)
+    def test_file_ancestor_refuses(self):
+        p=self.base/'alias';self.link(p,self.root,True);self.assertEqual(self.code(p/'zero'),2)
+    def test_metadata_error_refuses(self):
+        with mock.patch.object(Path,'lstat',side_effect=OSError('forced')):self.assertEqual(self.code(self.file),2)
+    def test_reparse_attribute_refuses(self):
+        real=Path.lstat
+        def fake(p,*a,**kw):
+            value=real(p,*a,**kw)
+            if p==self.file:return type('Reparse',(),{'st_mode':value.st_mode,'st_file_attributes':0x400})()
+            return value
+        with mock.patch.object(Path,'lstat',fake):self.assertEqual(self.code(self.file),2)
+    def test_setup_alias_parent_refuses(self):
+        import make_sample
+        p=self.base/'alias';self.link(p,self.root,True)
+        with mock.patch.object(make_sample,'SAMPLE',str(p/'new')):
+            with self.assertRaises(OSError):make_sample.main()
+        self.assertFalse((self.root/'new').exists())
+    def test_setup_traversal_refuses(self):
+        import make_sample
+        with mock.patch.object(make_sample,'SAMPLE',str(self.root/'..'/'new')):
+            with self.assertRaises(OSError):make_sample.main()
+
 
 
 if __name__ == "__main__":
