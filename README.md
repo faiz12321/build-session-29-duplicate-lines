@@ -1,31 +1,39 @@
-# Repeated line finder
+# Find repeated lines
 
-`dupelines.py` reads a plain text file and shows which lines appear
-more than once, with counts, so you can tidy an exported list without
-reading it line by line. It is read-only: it only looks, and it never
-changes, moves or deletes anything. Run it first on the made-up
-`sample` folder from `make_sample.py` before pointing it anywhere
-else.
+Read-only teaching tool for one UTF-8 text file. It counts exact strings, so
+case and spaces matter. Blank lines have no characters and are labeled in the
+report. Ties keep first-appearance order. Lines use Python str.splitlines
+boundaries, not visual wrapping in an editor.
 
-- A duplicate means the exact same text: letter case and spaces
-  count. Blank lines show as `(blank line)`.
-- The most repeated lines come first; ties keep file order.
-- The file must be plain UTF-8 text. Windows (CRLF), Mac/Linux (LF)
-  and old Mac (CR) endings all count, and a last line without an
-  ending still counts.
+The report prints line contents: practise only on fictional or non-sensitive
+data. It does not decide which copies to keep. An explicit file path can follow
+a link to a target elsewhere. Link handling is unchanged and not tested here.
 
-## Use
+## Practise
+
+Save all three files in a new empty lesson folder. Python 3 is required:
 
     python make_sample.py
     python dupelines.py sample/shopping.txt
-    python dupelines.py "C:\Users\you\Documents\my-list.txt"
-
-## Tests
-
     python -m unittest -v
 
-Works on Windows, Mac and Linux with Python 3.10 or newer. Nothing to
-install: it uses only what comes with Python.
+Setup creates sample beside the script and refuses any existing sample path.
+It never deletes or resets an old sample. Use a different new empty lesson
+folder if it refuses. The shopping list is fictional practice text.
+
+## Evidence
+
+22 tests use temporary fixtures, including sample-count tests. They cover exact
+string counting, CLI errors, unchanged source metadata, setup file/folder
+collision refusal, original bytes, nested sentinel data and repeat-run
+preservation. These small fixture passes are not universal safety proof.
+
+Two GitHub-hosted Windows recordings and two Ubuntu recordings pass all tests.
+The driver first saves the repeated-comparison version and records its repeated
+reports, then saves the dictionary counter, as the lesson shows. Displayed
+output uses first Windows output. Paired runs differ only in unittest elapsed
+time; versions and test rendering can differ. No Windows desktop or macOS
+session was tested.
 
 ## License
 
