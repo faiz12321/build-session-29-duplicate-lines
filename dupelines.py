@@ -12,6 +12,30 @@ Usage:
     python dupelines.py FILE
 """
 import sys
+import stat
+from pathlib import Path
+
+
+def safe_input(value, directory=False):
+    path = Path(value).absolute()
+    if '..' in path.parts:
+        raise OSError('Parent-traversal paths are unsupported.')
+    for part in [*reversed(path.parents), path]:
+        info = part.lstat()
+        if stat.S_ISLNK(info.st_mode) or getattr(info, 'st_file_attributes', 0) & 0x400:
+            raise OSError('Links/reparse points are unsupported.')
+    info = path.lstat()
+    if directory:
+        if not stat.S_ISDIR(info.st_mode):
+            raise NotADirectoryError('Expected an ordinary directory.')
+    elif not stat.S_ISREG(info.st_mode) or info.st_nlink != 1:
+        raise OSError('Expected an ordinary singly linked file.')
+    return path
+
+
+
+
+
 
 
 def count_kinds(lines):
@@ -41,7 +65,7 @@ def main(argv):
         return 2
     path = argv[1]
     try:
-        with open(path, "rb") as handle:
+        with open(safe_input(path), "rb") as handle:
             data = handle.read()
     except OSError:
         print("No such file: " + path, file=sys.stderr)
